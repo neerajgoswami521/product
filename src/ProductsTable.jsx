@@ -6,58 +6,28 @@ const ProductsTable = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const productsData = [
-    {
-      productName: "Laptop",
-      description: "High performance laptop",
-      price: 1200.99,
-      stockQuantity: 10,
-      categoryId: 1,
-      createdAt: "2024-02-12T10:00:00Z",
-      updatedAt: "2024-02-12T12:00:00Z"
-    },
-    {
-      productName: "Chair",
-      description: "Comfortable office chair",
-      price: 150.50,
-      stockQuantity: 20,
-      categoryId: 2,
-      createdAt: "2024-02-11T09:30:00Z",
-      updatedAt: "2024-02-11T11:00:00Z"
-    }
-  ];
-  
-  const categories = [
-    {
-      categoryName: "Electronics",
-      description: "Devices and gadgets",
-      isActive: true,
-      createdAt: "2024-02-10T08:00:00Z",
-      updatedAt: "2024-02-12T10:00:00Z"
-    },
-    {
-      categoryName: "Furniture",
-      description: "Home and office furniture",
-      isActive: true,
-      createdAt: "2024-02-09T07:30:00Z",
-      updatedAt: "2024-02-11T09:00:00Z"
-    }
-  ];
 
-  // useEffect(() => {
-  //   axios.get("/products")
-  //     .then(response => {
-  //       setProducts(response.data);
-  //       setLoading(false);
-  //     })
-  //     .catch(error => {
-  //       setError("Failed to fetch products");
-  //       setLoading(false);
-  //     });
-  // }, []);
 
-  // if (loading) return <p>Loading...</p>;
-  // if (error) return <p>{error}</p>;
+  useEffect(() => {
+    fetch("http://localhost:8000/products")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch products"); // Throw error for non-2xx status codes
+        }
+        return response.json(); // Parse the JSON response
+      })
+      .then(data => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error.message); // Set the error message
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <table border="1" cellPadding="10">
@@ -67,17 +37,17 @@ const ProductsTable = () => {
           <th>Description</th>
           <th>Price</th>
           <th>Stock Quantity</th>
-          {/* <th>Category</th> */}
+          <th>Category</th>
         </tr>
       </thead>
       <tbody>
-        {productsData.map(product => (
+        {products.map(product => (
           <tr key={product.id}>
-            <td>{product.productName}</td>
-            <td>{product.description}</td>
-            <td>${product.price}</td>
-            <td>{product.stockQuantity}</td>
-            {/* <td>{product.category}</td> */}
+            <td>{product.ProductName}</td>
+            <td>{product.Description}</td>
+            <td>${product.Price}</td>
+            <td>{product.StockQuantity}</td>
+            <td>{product.CategoryName}</td>
           </tr>
         ))}
       </tbody>
